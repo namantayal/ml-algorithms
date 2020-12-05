@@ -159,6 +159,8 @@ double cost(vector<int> &Y,vector<double> &Y_hat)
     return -sum/Xrow;
 }
 
+
+
 void beta_derivative(vector<vector<double>> &X, vector<int> &Y, vector<double> &Y_hat, vector<double> &beta_d)
 {
     vector<vector<double>> X_transpose(Xcol, vector<double>(Xrow));
@@ -222,6 +224,20 @@ void estimate(vector<vector<double>> &X, vector<int> &Y, vector<double> &beta, d
     }
 }
 
+void confusion_matrix(vector<int> &Y_test, vector<double> &Y_hat)
+{
+    vector<vector<int>> matrix(2, vector<int>(2,0));
+    for(int i=0;i<Y_test.size();i++)
+    {
+        int row = Y_hat[i];
+        int col = Y_test[i];
+        matrix[row][col]+=1;
+    }
+    cout<<"\n\nConfusion Matrix - \n\n";
+    cout<<"\t"<<matrix[0][0]<<"\t"<<matrix[0][1]<<"\n";
+    cout<<"\t"<<matrix[1][0]<<"\t"<<matrix[1][1]<<"\n";
+}
+
 int main()
 {
     vector<vector<double>> X(Xrow, vector<double>(Xcol));
@@ -260,7 +276,10 @@ int main()
             count++;
         }
     }
-    cout<<endl<<((float)count/Xrow_test)*100<<endl;
+
+    confusion_matrix(Y_test,Y_hat);
+    cout<<endl<<"Accuracy - "<<((float)count/Xrow_test)*100<<"%"<<endl;
+    
     write_csv(X_test,Y_test,Y_hat);
     return 0;
 }
